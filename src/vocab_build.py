@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 
 marker_tokens = {
@@ -47,10 +49,15 @@ formatted_answers = [marker_tokens['start_token'] + ' ' + str(answer) + ' ' + ma
                      for answer in dataset['Answers']]
 
 inv_vocab = {word_id: word for word, word_id in vocab.items()}
-print(inv_vocab)
 
 encoder_inp = create_tokenized_seq(dataset['Questions'], vocab)
 decoder_inp = create_tokenized_seq(dataset['Answers'], vocab)
 
 print('First Encoder Input:', encoder_inp[0])
 print('First Decoder Input:', decoder_inp[0])
+
+vocab_data = {'vocab': vocab, 'inv_vocab': inv_vocab, 'encoder_inp': encoder_inp, 'decoder_inp': decoder_inp,
+              'formatted_answers': formatted_answers}
+
+with open('../data/vocab.pkl', 'wb') as vocab_file:
+    pickle.dump(vocab_data, vocab_file)
