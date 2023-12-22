@@ -73,5 +73,5 @@ print('First Decoder Input:', decoder_inp[0])
 vocab_data = {'vocab': vocab, 'inv_vocab': inv_vocab, 'encoder_inp': encoder_inp, 'decoder_inp': decoder_inp,
               'formatted_answers': formatted_answers}
 
-with open('../data/vocab.pkl', 'wb') as vocab_file:
+with open('../bot-data/vocab.pkl', 'wb') as vocab_file:
     pickle.dump(vocab_data, vocab_file)
