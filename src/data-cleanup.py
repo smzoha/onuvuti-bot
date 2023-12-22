@@ -20,6 +20,9 @@ def get_clean_data(input_data, attr):
 dataset = pd.read_csv('../data/BengaliEmpatheticConversationsCorpus.csv', encoding='utf-8')
 dataset = dataset[['Questions', 'Answers']]
 
+bot_dataset = pd.read_csv('../bot-data/OnuvutiBot Dataset.csv')
+dataset = pd.merge(dataset, bot_dataset, on=['Questions', 'Answers'], how='outer')
+
 print('\nDataset Statistics:')
 print(dataset.describe())
 
