@@ -9,6 +9,12 @@ numpy = '*'
 bnlp = '*'
 kaggle = '*'
 
+# For Linux machine, use the regular distribution of tensorflow
+tensorflow = '*'
+
+# For Window machine with GPU support (CUDA), uncomment the following
+#tensorflow = { version = "<2.11" }
+
 [dev-packages]
 
 [requires]
