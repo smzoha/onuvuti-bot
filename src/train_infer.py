@@ -29,9 +29,7 @@ decoder_target_data = []
 for token_seq in decoder_seq:
     decoder_target_data.append(token_seq[1:])
 
-decoder_seq_shifted = pad_sequences(decoder_target_data, 32, padding='post')
-one_hot_decoder_seq = to_categorical(decoder_seq_shifted, len(vocab))
-decoder_target_data = np.array(one_hot_decoder_seq)
+decoder_target_data = pad_sequences(decoder_target_data, 32, padding='post')
 
 # Training model
 enc_inp_layer = Input(shape=(32,))
@@ -52,9 +50,9 @@ dense = Dense(len(vocab), activation='softmax')
 dense_out = dense(dec_seq_out)
 
 model = Model([enc_inp_layer, dec_inp_layer], dense_out)
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-model.fit([encoder_seq, decoder_seq], decoder_target_data, epochs=40)
+model.fit([encoder_seq, decoder_seq], decoder_target_data, epochs=80)
 
 # Inference Engine
 enc_model = Model([enc_inp_layer], enc_states)
