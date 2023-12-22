@@ -5,9 +5,8 @@ import numpy as np
 from tensorflow.keras.layers import Input, LSTM, Dense, Embedding
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.utils import to_categorical
 
-with open('../data/vocab.pkl', 'rb') as vocab_file:
+with open('../bot-data/vocab.pkl', 'rb') as vocab_file:
     vocab_data = pickle.load(vocab_file)
 
 vocab = vocab_data['vocab']
