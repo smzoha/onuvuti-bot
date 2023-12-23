@@ -9,26 +9,15 @@ marker_tokens = {
     'unk_token': '<UNK>'
 }
 
-vocab_freq_thres = 5
 
-
-def add_to_vocab(data, vocab, counter, word_counter):
+def add_to_vocab(data, vocab, counter):
     for text in data:
         for word in str(text).split():
-            if word not in vocab and word_counter[word] > 5:
+            if word not in vocab:
                 vocab[word] = counter
                 counter += 1
 
     return counter
-
-
-def run_word_counter(word_counter, data):
-    for text in data:
-        for word in str(text).split():
-            if word not in word_counter:
-                word_counter[word] = 1
-            else:
-                word_counter[word] = word_counter[word] + 1
 
 
 def create_tokenized_seq(data, vocab):
@@ -43,14 +32,10 @@ def create_tokenized_seq(data, vocab):
 
 dataset = pd.read_csv('../data/clean_data.csv')
 
-word_counter = {}
-run_word_counter(word_counter, dataset['Questions'])
-run_word_counter(word_counter, dataset['Answers'])
-
 vocab = {marker_tokens['pad_token']: 0}
 counter = 1
-counter = add_to_vocab(dataset['Questions'], vocab, counter, word_counter)
-counter = add_to_vocab(dataset['Answers'], vocab, counter, word_counter)
+counter = add_to_vocab(dataset['Questions'], vocab, counter)
+counter = add_to_vocab(dataset['Answers'], vocab, counter)
 
 for token in marker_tokens.values():
     if token not in vocab:
