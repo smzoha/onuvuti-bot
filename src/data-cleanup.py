@@ -47,6 +47,11 @@ dataset['Answers'] = get_clean_data(input_data=dataset, attr='Answers')
 print('\nFirst 10 Rows of Clean Data')
 print(dataset.head(10))
 
+print('\nDropping empty data (after cleanup)')
+dataset.dropna(inplace=True)
+dataset.drop_duplicates(inplace=True)
+dataset.reset_index(drop=True, inplace=True)
+
 print('Write cleaned dataset to file...')
 if not os.path.exists('../data'):
     os.mkdir('../data')

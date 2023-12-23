@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 pandas = '*'
 numpy = '*'
-bnlp = '*'
+bnlp-toolkit = '*'
 kaggle = '*'
 
 # For Linux machine, use the regular distribution of tensorflow

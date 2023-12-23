@@ -1,5 +1,6 @@
 .idea
 data
+src/__pycache__
 
 Pipfile.lock
 *.iml
