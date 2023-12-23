@@ -1,6 +1,8 @@
 import os.path
 import pickle
+import re
 
+import numpy as np
 from tensorflow.keras.layers import Input, LSTM, Dense, Embedding
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -50,3 +52,54 @@ if not os.path.exists('../model'):
     os.mkdir('../model')
 
 model.save('../model/seq2seq.keras')
+
+# Inference Engine
+enc_model = Model([enc_inp_layer], enc_states)
+decoder_mem_state_input = Input(shape=(512,))
+decoder_carry_state_input = Input(shape=(512,))
+decoder_state_inputs = [decoder_mem_state_input, decoder_carry_state_input]
+dec_out, dec_mem_state, dec_carry_state = dec_lstm(dec_embed, initial_state=decoder_state_inputs)
+dec_model = Model([dec_inp_layer] + decoder_state_inputs, [dec_out] + [dec_mem_state, dec_carry_state])
+user_input = ''
+
+while user_input != 'bye':
+    user_input = input('You: ')
+    user_input = user_input.lower()
+    user_input = re.sub('[^a-zA-Z\\s]', '', user_input)
+    user_inputs = [user_input]
+    txt = []
+
+    for user_text in user_inputs:
+        tokens = []
+        for token in user_text.split():
+            if token in vocab:
+                tokens.append(vocab[token])
+            else:
+                tokens.append(vocab['<UNK>'])
+        txt.append(tokens)
+
+    txt = pad_sequences(txt, 32, padding='post')
+    enc_out = enc_model.predict(txt)
+    empty_target_seq = np.zeros((1, 1))
+    empty_target_seq[0, 0] = vocab['<SOS>']
+
+    stop_condition = False
+    result = ''
+
+    while not stop_condition:
+        output, mem_state, cache_state = dec_model.predict([empty_target_seq] + enc_out)
+        decoder_inp_concat = dense(output)
+        sampled_word_index = np.argmax(decoder_inp_concat[0, -1, :])
+        sampled_word = inv_vocab[sampled_word_index] + ' '
+
+        if sampled_word != '<EOS>':
+            result += sampled_word
+
+        if sampled_word == '<EOS>' or len(result.split()) > 32:
+            stop_condition = True
+
+        empty_target_seq = np.zeros((1, 1))
+        empty_target_seq[0, 0] = sampled_word_index
+        enc_out = [mem_state, cache_state]
+
+    print('Bot: ', result)
